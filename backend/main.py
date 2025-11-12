@@ -179,8 +179,44 @@ async def generate_proposal(request: ProposalRequest):
             for msg in request.messages
         ])
 
+        # Detect conversation language
+        sample_text = " ".join([msg.content for msg in request.messages[:3]])  # Sample first 3 messages
+
+        # Simple language detection
+        from openai import OpenAI
+        client = OpenAI(api_key=openai_api_key)
+
+        lang_detect_response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are a language detector. Reply with only one word: 'English', 'Chinese', 'Japanese', 'Spanish', 'French', or 'Other'."},
+                {"role": "user", "content": f"What language is this text in? Text: {sample_text[:500]}"}
+            ],
+            temperature=0.3,
+            max_tokens=10
+        )
+
+        detected_language = lang_detect_response.choices[0].message.content.strip()
+
+        # Set language instruction based on detected language
+        language_instruction = ""
+        if "Chinese" in detected_language or "中文" in detected_language:
+            language_instruction = "Please generate the entire proposal in Chinese (简体中文)."
+        elif "Japanese" in detected_language or "日本" in detected_language:
+            language_instruction = "Please generate the entire proposal in Japanese (日本語)."
+        elif "Spanish" in detected_language:
+            language_instruction = "Please generate the entire proposal in Spanish (Español)."
+        elif "French" in detected_language:
+            language_instruction = "Please generate the entire proposal in French (Français)."
+        else:
+            language_instruction = "Please generate the entire proposal in English."
+
         # Generate structured proposal using LLM
         prompt = f"""Based on the following conversation history, generate a comprehensive, professional project proposal document.
+
+{language_instruction}
+
+IMPORTANT: Write the ENTIRE document in the specified language, including all headers, sections, tables, and content.
 
 Conversation History:
 {conversation_summary}

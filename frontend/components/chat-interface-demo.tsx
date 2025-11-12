@@ -265,6 +265,7 @@ export function ChatInterfaceDemo() {
     setSessions((prev) => [newSession, ...prev]);
     setCurrentSessionId(newSession.id);
     setMessages([]);
+    setSelectedProposal(null);
   };
 
   const selectSession = (sessionId: string) => {
@@ -272,6 +273,10 @@ export function ChatInterfaceDemo() {
     if (session) {
       setCurrentSessionId(sessionId);
       setMessages(session.messages);
+      // Clear selected proposal if it doesn't belong to this session
+      if (selectedProposal && selectedProposal.sessionId !== sessionId) {
+        setSelectedProposal(null);
+      }
     }
   };
 
@@ -281,6 +286,7 @@ export function ChatInterfaceDemo() {
     if (currentSessionId === sessionId) {
       setCurrentSessionId("");
       setMessages([]);
+      setSelectedProposal(null);
     }
   };
 
@@ -581,12 +587,17 @@ export function ChatInterfaceDemo() {
             Proposals
           </h2>
           <p className="text-xs text-muted-foreground mt-1">
-            {proposals.length} generated
+            {proposals.filter(p => p.sessionId === currentSessionId).length} for this chat
           </p>
         </div>
 
         <ScrollArea className="flex-1">
-          {proposals.length === 0 ? (
+          {!currentSessionId ? (
+            <div className="p-6 text-center text-sm text-muted-foreground">
+              <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
+              <p>Select a chat to view proposals</p>
+            </div>
+          ) : proposals.filter(p => p.sessionId === currentSessionId).length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
               <FileText className="h-12 w-12 mx-auto mb-3 opacity-20" />
               <p>No proposals yet</p>
@@ -596,7 +607,7 @@ export function ChatInterfaceDemo() {
             </div>
           ) : (
             <div className="p-3 space-y-3">
-              {proposals.map((proposal) => (
+              {proposals.filter(p => p.sessionId === currentSessionId).map((proposal) => (
                 <Card
                   key={proposal.id}
                   className={`p-4 cursor-pointer transition-all ${

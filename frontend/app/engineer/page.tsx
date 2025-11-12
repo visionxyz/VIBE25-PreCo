@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Download, Home, RefreshCw, Eye, CheckCircle, Clock, Loader2, MessageSquare, History, Send } from "lucide-react";
+import { FileText, Download, Home, RefreshCw, Eye, CheckCircle, Clock, Loader2, MessageSquare, History, Send, Languages } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -153,6 +153,7 @@ export default function EngineerView() {
   // Translation states
   const [translatingProposalId, setTranslatingProposalId] = useState<string | null>(null);
   const [translationCache, setTranslationCache] = useState<Map<string, string>>(new Map());
+  const [showTranslation, setShowTranslation] = useState(true); // Toggle between original and translated
 
   // Load committed proposals from localStorage
   const loadProposals = () => {
@@ -179,6 +180,27 @@ export default function EngineerView() {
     loadProposals();
     loadSavedPlans();
   }, []);
+
+  // Save proposals to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined' && proposals.length > 0) {
+      // Get all proposals from localStorage (including non-committed ones from client)
+      const allProposals = localStorage.getItem('proposals');
+      if (allProposals) {
+        try {
+          const parsed = JSON.parse(allProposals);
+          // Update the committed proposals with latest data (including translations)
+          const updatedProposals = parsed.map((p: any) => {
+            const updated = proposals.find((prop) => prop.id === p.id);
+            return updated ? { ...p, translatedContent: updated.translatedContent } : p;
+          });
+          localStorage.setItem('proposals', JSON.stringify(updatedProposals));
+        } catch (e) {
+          console.error("Error saving proposals:", e);
+        }
+      }
+    }
+  }, [proposals]);
 
   // Load saved plans from localStorage
   const loadSavedPlans = () => {
@@ -609,6 +631,7 @@ export default function EngineerView() {
                             onClick={(e) => {
                               e.stopPropagation();
                               translateProposal(proposal);
+                              setShowTranslation(true);
                             }}
                             disabled={translatingProposalId === proposal.id}
                           >
@@ -626,6 +649,7 @@ export default function EngineerView() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setViewingProposal(proposal);
+                            setShowTranslation(!!proposal.translatedContent);
                           }}
                         >
                           <Eye className="h-4 w-4 mr-2" />
@@ -677,21 +701,36 @@ export default function EngineerView() {
             <div className="border-b p-6 flex items-center justify-between flex-shrink-0">
               <div className="flex-1">
                 <h2 className="text-2xl font-bold">{viewingProposal.title}</h2>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-1" suppressHydrationWarning>
                   承認日時: {viewingProposal.timestamp.toLocaleString()}
                 </p>
-                {viewingProposal.translatedContent && (
-                  <Badge variant="secondary" className="mt-2">
-                    日本語翻訳済み
-                  </Badge>
-                )}
+                <div className="flex gap-2 mt-2">
+                  {viewingProposal.translatedContent && (
+                    <Badge variant="secondary">
+                      日本語翻訳済み
+                    </Badge>
+                  )}
+                  {viewingProposal.translatedContent && showTranslation && (
+                    <Badge variant="outline">
+                      日本語表示中
+                    </Badge>
+                  )}
+                  {viewingProposal.translatedContent && !showTranslation && (
+                    <Badge variant="outline">
+                      原文表示中
+                    </Badge>
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-2">
-                {!viewingProposal.translatedContent && (
+                {!viewingProposal.translatedContent ? (
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => translateProposal(viewingProposal)}
+                    onClick={() => {
+                      translateProposal(viewingProposal);
+                      setShowTranslation(true);
+                    }}
                     disabled={translatingProposalId === viewingProposal.id}
                   >
                     {translatingProposalId === viewingProposal.id ? (
@@ -700,6 +739,15 @@ export default function EngineerView() {
                       <RefreshCw className="h-4 w-4 mr-2" />
                     )}
                     日本語に翻訳
+                  </Button>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowTranslation(!showTranslation)}
+                  >
+                    <Languages className="h-4 w-4 mr-2" />
+                    {showTranslation ? "原文を表示" : "翻訳を表示"}
                   </Button>
                 )}
                 <Button
@@ -717,7 +765,9 @@ export default function EngineerView() {
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw]}
                 >
-                  {viewingProposal.translatedContent || viewingProposal.content}
+                  {viewingProposal.translatedContent && showTranslation
+                    ? viewingProposal.translatedContent
+                    : viewingProposal.content}
                 </ReactMarkdown>
               </div>
             </div>

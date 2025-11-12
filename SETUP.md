@@ -1,45 +1,45 @@
-# AI Presales Copilot - 快速启动指南
+# AI Presales Copilot - Quick Start Guide
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 前置要求
+### Prerequisites
 - Node.js 18+
 - Python 3.11+
 - OpenAI API Key
 
 ---
 
-## 📦 安装步骤
+## 📦 Installation Steps
 
-### 1️⃣ 配置后端
+### 1️⃣ Configure Backend
 
 ```bash
 cd backend
 
-# 激活虚拟环境
+# Activate virtual environment
 source venv/bin/activate  # Mac/Linux
-# 或 venv\Scripts\activate  # Windows
+# or venv\Scripts\activate  # Windows
 
-# 创建.env文件
+# Create .env file
 cp .env.example .env
 
-# 编辑.env文件,添加你的OpenAI API Key
+# Edit .env file, add your OpenAI API Key
 # OPENAI_API_KEY=sk-...
 ```
 
-### 2️⃣ 配置前端
+### 2️⃣ Configure Frontend
 
 ```bash
 cd frontend
 
-# (依赖已安装)
+# (Dependencies already installed)
 ```
 
 ---
 
-## 🎯 启动应用
+## 🎯 Launch Application
 
-### 启动后端服务器
+### Start Backend Server
 
 ```bash
 cd backend
@@ -47,123 +47,123 @@ source venv/bin/activate
 python main.py
 ```
 
-后端将运行在: `http://localhost:8000`
+Backend will run on: `http://localhost:8000`
 
-### 启动前端服务器
+### Start Frontend Server
 
-打开**新的终端窗口**:
+Open a **new terminal window**:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-前端将运行在: `http://localhost:3000`
+Frontend will run on: `http://localhost:3000`
 
 ---
 
-## 📱 使用说明
+## 📱 Usage Instructions
 
-### 客户端视图 (主页面)
-访问: `http://localhost:3000`
+### Client View (Main Page)
+Visit: `http://localhost:3000`
 
-1. **开始对话**: 在输入框中描述你的项目需求
-2. **多轮交互**: AI会基于你的需求提问并给出建议
-3. **生成提案**: 满意后点击"生成项目提案"按钮下载文档
+1. **Start Conversation**: Describe your project requirements in the input box
+2. **Multi-turn Interaction**: AI will ask questions and provide suggestions based on your needs
+3. **Generate Proposal**: Click the "Generate Project Proposal" button to download the document when satisfied
 
-### 工程师视图
-访问: `http://localhost:3000/engineer`
+### Engineer View
+Visit: `http://localhost:3000/engineer`
 
-查看:
-- **用户画像**: 行业、技术背景、需求分析
-- **产品构思**: 功能模块、技术栈、实施路线图
+View:
+- **User Profile**: Industry, technical background, requirement analysis
+- **Product Concept**: Feature modules, tech stack, implementation roadmap
 
 ---
 
-## 🧪 测试示例对话
+## 🧪 Test Example Conversation
 
-试试这些示例:
+Try these examples:
 
 ```
-🧑‍💼 你: 我想做一个AI驱动的药物溶解度预测应用,能在手机上用
+🧑‍💼 You: I want to build an AI-driven drug solubility prediction app that works on mobile phones
 
-🤖 AI: 很好的想法!我们可以基于公司现有的分子嵌入模块来构建...
+🤖 AI: Great idea! We can build this based on the company's existing molecular embedding module...
 
-🧑‍💼 你: 我们的研究团队大约10人,技术背景一般
+🧑‍💼 You: Our research team has about 10 people with average technical background
 
-🤖 AI: 了解。考虑到团队背景,我建议...
+🤖 AI: Understood. Considering the team background, I suggest...
 
-🧑‍💼 你: 预算在50万人民币左右,希望3个月内上线MVP
+🧑‍💼 You: Budget is around 500,000 RMB, hoping to launch MVP within 3 months
 
-🤖 AI: 基于这个预算和时间,我推荐以下实施方案...
+🤖 AI: Based on this budget and timeline, I recommend the following implementation plan...
 ```
 
 ---
 
-## ⚙️ 当前功能状态
+## ⚙️ Current Feature Status
 
-✅ **已实现**:
-- 多轮对话 (OpenAI GPT-4o)
-- 智能需求分析
-- 自动生成项目提案
-- 工程师侧视图
+✅ **Implemented**:
+- Multi-turn conversation (OpenAI GPT-4o)
+- Intelligent requirement analysis
+- Automatic project proposal generation
+- Engineer-side view
 
-🔄 **计划中** (未实现):
-- RAG检索 (向量数据库集成)
-- 基于内部代码库的方案推荐
-- 多语言切换
-- 会话持久化
-
----
-
-## 🔑 重要提示
-
-1. **API Key安全**:
-   - ⚠️ 不要将`.env`文件提交到Git
-   - ⚠️ `.env.example`仅作为模板
-
-2. **后端必须先启动**: 前端依赖后端API
-
-3. **端口冲突**:
-   - 如果8000或3000端口被占用,修改对应配置
+🔄 **Planned** (Not yet implemented):
+- RAG retrieval (vector database integration)
+- Solution recommendations based on internal codebase
+- Multi-language switching
+- Session persistence
 
 ---
 
-## 🐛 常见问题
+## 🔑 Important Notes
 
-### Q: 前端报错"Failed to process request"
-A: 检查后端是否正常运行 (http://localhost:8000)
+1. **API Key Security**:
+   - ⚠️ Do not commit `.env` file to Git
+   - ⚠️ `.env.example` is only a template
 
-### Q: API调用失败
-A: 验证`.env`中的`OPENAI_API_KEY`是否正确
+2. **Backend must start first**: Frontend depends on backend API
 
-### Q: 依赖安装失败
-A: 确保Python 3.11+和Node.js 18+版本
-
----
-
-## 📚 下一步
-
-1. **添加RAG功能**: 集成向量数据库和内部知识库
-2. **增强UI**: 添加打字机效果、更好的样式
-3. **会话管理**: 支持多个项目会话
-4. **部署**: 配置Docker和云端部署
+3. **Port Conflicts**:
+   - If ports 8000 or 3000 are occupied, modify corresponding configuration
 
 ---
 
-## 🎨 项目结构
+## 🐛 Common Issues
+
+### Q: Frontend error "Failed to process request"
+A: Check if backend is running normally (http://localhost:8000)
+
+### Q: API call failed
+A: Verify that `OPENAI_API_KEY` in `.env` is correct
+
+### Q: Dependency installation failed
+A: Ensure Python 3.11+ and Node.js 18+ versions
+
+---
+
+## 📚 Next Steps
+
+1. **Add RAG functionality**: Integrate vector database and internal knowledge base
+2. **Enhance UI**: Add typewriter effects, better styling
+3. **Session Management**: Support multiple project sessions
+4. **Deployment**: Configure Docker and cloud deployment
+
+---
+
+## 🎨 Project Structure
 
 ```
 yc/
-├── backend/           # FastAPI后端
-│   ├── main.py       # 主应用文件
+├── backend/           # FastAPI backend
+│   ├── main.py       # Main application file
 │   ├── requirements.txt
-│   └── .env          # API密钥 (需创建)
-├── frontend/         # Next.js前端
+│   └── .env          # API key (needs to be created)
+├── frontend/         # Next.js frontend
 │   ├── app/
-│   │   ├── page.tsx          # 客户聊天界面
-│   │   ├── engineer/page.tsx # 工程师视图
-│   │   └── api/              # API路由
+│   │   ├── page.tsx          # Client chat interface
+│   │   ├── engineer/page.tsx # Engineer view
+│   │   └── api/              # API routes
 │   └── components/
 │       └── chat-interface.tsx
 └── README_AI_Presales_Copilot.md
@@ -171,4 +171,4 @@ yc/
 
 ---
 
-**祝使用愉快! 🚀**
+**Enjoy using! 🚀**

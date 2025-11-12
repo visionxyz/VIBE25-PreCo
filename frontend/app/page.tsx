@@ -89,7 +89,7 @@ export default function Home() {
               </div>
 
               <Link href="/engineer" className="w-full">
-                <Button className="w-full" variant="outline" size="lg">
+                <Button className="w-full" size="lg">
                   Enter Engineer Dashboard
                 </Button>
               </Link>
